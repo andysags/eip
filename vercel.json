@@ -21,8 +21,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/$1",
-      "continue": true
+      "destination": "/$1"
     },
     {
       "source": "/(.*)",
