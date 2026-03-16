@@ -25,7 +25,6 @@ Le serveur sera accessible sur `http://localhost:4000`.
 Si vous souhaitez lancer le frontend séparément (par exemple pour le développement avec `npx serve`) :
 
 ```bash
-cd frontend
 npx serve .
 ```
 Par défaut, cela sera accessible sur `http://localhost:3000`.
