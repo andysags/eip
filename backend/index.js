@@ -14,17 +14,23 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Middleware
-app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://eventbenin.com', 'https://www.eventbenin.com'] // Remplacez par votre vrai domaine
-        : '*' // Accepte tout en développement
-}));
+app.use(cors()); // Accepte toutes les origines pour faciliter le déploiement sur Vercel
 app.use(express.json());
 
+// Logger simple pour déboguer sur Vercel
+app.use((req, res, next) => {
+    console.log(`[API] ${req.method} ${req.url}`);
+    next();
+});
 
+// Vérification de la configuration Supabase
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('CRITICAL: Supabase environment variables are missing!');
+    // On ne bloque pas tout de suite, mais on retourne une erreur sur les routes concernées
+}
 
 // Import and use authentication routes
-const authRoutes = require('./routes/auth')(supabase); // Pass supabase client
+const authRoutes = require('./routes/auth')(supabase); 
 app.use('/api/auth', authRoutes);
 
 // Import and use product routes
@@ -53,15 +59,30 @@ app.use('/assets', express.static(path.join(__dirname, '../assets')));
 // Serve HTML files from the root directory safely
 app.use((req, res, next) => {
     if (req.path.endsWith('.html')) {
-        res.sendFile(path.join(__dirname, '../', req.path));
+        res.sendFile(path.join(__dirname, '../', req.path), (err) => {
+            if (err) next(); 
+        });
     } else {
         next();
     }
 });
 
-// Catch-all route to serve index.html for any unhandled routes
+// Catch-all route 
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../', 'index.html'));
+  if (req.path.startsWith('/api')) {
+      return res.status(404).json({ 
+          error: 'Route API introuvable', 
+          path: req.path,
+          method: req.method
+      });
+  }
+  // En production sur Vercel, les fichiers statiques sont gérés par Vercel lui-même
+  // On ne sert l'index.html que si on est convaincu que c'est une route frontend
+  res.sendFile(path.join(__dirname, '../', 'index.html'), (err) => {
+      if (err) {
+          res.status(404).send('Not Found');
+      }
+  });
 });
 
 // Export the app for Vercel
