@@ -64,7 +64,13 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../', 'index.html'));
 });
 
-app.listen(port, () => {
-  console.log(`EIP backend listening at http://localhost:${port}`);
-  console.log(`Supabase URL: ${supabaseUrl ? 'Configured' : 'NOT CONFIGURED'}`);
-});
+// Export the app for Vercel
+module.exports = app;
+
+// Only listen if the script is run directly (local development)
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`EIP backend listening at http://localhost:${port}`);
+    console.log(`Supabase URL: ${supabaseUrl ? 'Configured' : 'NOT CONFIGURED'}`);
+  });
+}

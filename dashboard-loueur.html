@@ -7,20 +7,11 @@
     <title>Tableau de Bord Loueur v2.1 - EventBenin</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Segoe+UI&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=2">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=2.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Custom enhancements for dashboard forms */
-        .form-control {
-            border: 1px solid #e5e7eb;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 135, 81, 0.1);
-        }
-
+        /* Specific enhancements for loueur forms */
         .file-upload-wrapper {
             position: relative;
             background: #f9fafb;
@@ -46,93 +37,55 @@
     </script>
 </head>
 
-<body class="bg-light">
+<body class="dash-body">
 
-    <!-- Navbar injected by app.js -->
+    <div class="dash-wrapper">
+        <!-- Sidebar -->
+        <nav class="dash-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-logo">
+                    EventBenin<span>.</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-content">
+                <span class="sidebar-label">Espace Loueur</span>
+                <a href="#overview" class="dash-nav-item active"><i class="fas fa-home"></i> Vue d'ensemble</a>
+                <a href="#products" class="dash-nav-item"><i class="fas fa-box"></i> Mes Produits</a>
+                <a href="#calendar" class="dash-nav-item"><i class="fas fa-calendar-alt"></i> Calendrier 
+                    <span id="pending-count" class="badge-premium badge-warning" style="margin-left: auto; display: none;">0</span>
+                </a>
+                <a href="#stats" class="dash-nav-item"><i class="fas fa-chart-bar"></i> Statistiques</a>
+                <a href="#settings" class="dash-nav-item"><i class="fas fa-cog"></i> Paramètres</a>
 
-    <div class="container" style="margin-top: 2rem;">
-        <div class="dashboard-grid">
-
-            <!-- Sidebar -->
-            <aside class="dashboard-sidebar">
-                <button class="btn btn-outline mobile-filter-toggle" id="dashboard-toggle"
-                    style="width: 100%; margin-bottom: 1rem;">
-                    <i class="fas fa-bars"></i> Menu Dashboard
-                </button>
-                <nav id="dashboard-nav" class="sidebar-content">
-                    <a href="#overview" class="dash-nav-item active"><i class="fas fa-home"></i> Vue d'ensemble</a>
-                    <a href="#products" class="dash-nav-item"><i class="fas fa-box"></i> Mes Produits</a>
-                    <a href="#calendar" class="dash-nav-item"><i class="fas fa-calendar-alt"></i> Calendrier <span
-                            id="pending-count"
-                            style="background: var(--accent-color); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: auto; display: none;">0</span></a>
-                    <a href="#stats" class="dash-nav-item"><i class="fas fa-chart-bar"></i> Statistiques</a>
-                    <a href="#settings" class="dash-nav-item"><i class="fas fa-cog"></i> Paramètres</a>
-                    <a href="#logout" onclick="Store.logout()" class="dash-nav-item"
-                        style="color: var(--accent-color); margin-top: 2rem;"><i class="fas fa-sign-out-alt"></i>
-                        Déconnexion</a>
-                </nav>
-            </aside>
-
-            <!-- Main Content -->
-            <main>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 class="section-title" style="font-size: 1.5rem; margin: 0;">Vue d'ensemble</h2>
-                    <button class="btn btn-sm btn-outline" onclick="renderDashboard()"><i class="fas fa-sync-alt"></i>
-                        Actualiser</button>
+                <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--dash-glass-border);">
+                    <a href="#logout" onclick="Store.logout()" class="dash-nav-item" style="color: var(--dash-accent)">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </a>
                 </div>
+            </div>
+        </nav>
 
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
-                        <div>
-                            <div class="stat-value" id="stats-revenue">0</div>
-                            <div class="stat-label">Revenus (FCFA)</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
-                        <div>
-                            <div class="stat-value" id="stats-res-count">0</div>
-                            <div class="stat-label">Réservations</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-box-open"></i></div>
-                        <div>
-                            <div class="stat-value" id="stats-products">0</div>
-                            <div class="stat-label">Produits en ligne</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Orders -->
-                <div
-                    style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.5rem;">
-                    <h3 style="font-weight: 700; margin-bottom: 1rem;">Réservations Récentes</h3>
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Client / Lieu</th>
-                                    <th>Date Événement</th>
-                                    <th>Montant</th>
-                                    <th>Statut</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="orders-table">
-                                <!-- Injected by JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
-        </div>
         <!-- Main Content -->
-        <main id="main-content">
-            <!-- Views injected here -->
+        <main class="dash-main">
+            <!-- Mobile Topbar -->
+            <div class="dash-topbar">
+                <a href="index.html" class="sidebar-logo">EventBenin<span>.</span></a>
+                <button class="dash-btn-outline" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            </div>
+
+            <header class="dash-header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 class="dash-title">Tableau de Bord Loueur</h1>
+                        <p class="dash-subtitle">Gérez vos équipements et vos locations</p>
+                    </div>
+                </div>
+            </header>
+
+            <div id="main-content" class="animate-fade">
+                <!-- Views injected here -->
+            </div>
         </main>
     </div>
     </div>
@@ -400,16 +353,10 @@
                 });
             });
 
-            // Mobile Dashboard Toggle
-            const dashToggle = document.getElementById('dashboard-toggle');
-            const dashNav = document.getElementById('dashboard-nav');
-            if (dashToggle && dashNav) {
-                dashToggle.addEventListener('click', () => {
-                    const isHidden = dashNav.style.display === 'none' || dashNav.style.display === '';
-                    dashNav.style.display = isHidden ? 'flex' : 'none';
-                    dashNav.style.flexDirection = 'column';
-                });
-            }
+            // Mobile Toggle
+            window.toggleSidebar = () => {
+                document.getElementById('sidebar').classList.toggle('show');
+            };
 
             renderLoueurView('overview');
             updatePendingCount();
