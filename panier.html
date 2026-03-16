@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier - EventBenin Location</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Segoe+UI&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vpf22vkhh5");
+    </script>
+</head>
+<body>
+
+    <!-- Header injected by app.js -->
+
+    <!-- Cart Section -->
+    <section class="section">
+        <div class="container">
+            <h1 class="section-title">Votre Panier</h1>
+            
+            <div id="empty-cart-msg" style="display: none; text-align: center; padding: 4rem;">
+                <i class="fas fa-shopping-basket" style="font-size: 4rem; color: var(--text-gray); opacity: 0.3; margin-bottom: 1rem;"></i>
+                <h3>Votre panier est vide</h3>
+                <p style="margin-bottom: 2rem;">Trouvez l'inspiration dans notre catalogue.</p>
+                <a href="catalogue.html" class="btn btn-primary">Explorer le catalogue</a>
+            </div>
+
+            <div id="cart-content" class="catalogue-layout" style="grid-template-columns: 1fr 350px;">
+                <!-- Cart Items -->
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Quantité</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items">
+                            <!-- Items will be injected here by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary -->
+                <div class="sidebar">
+                    <h3 class="filter-title">Récapitulatif</h3>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <span>Sous-total</span>
+                        <span id="cart-subtotal">0 FCFA</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--text-gray); font-size: 0.9rem;">
+                        <span>TVA (18%)</span>
+                        <span>Inclus</span>
+                    </div>
+                    <div style="border-top: 1px solid var(--border-color); margin: 1rem 0;"></div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-weight: 700; font-size: 1.2rem;">
+                        <span>Total à payer</span>
+                        <span id="cart-total-final" class="text-primary">--</span>
+                    </div>
+                    <button class="btn btn-primary" id="checkout-btn" style="width: 100%;">
+                        Procéder au Paiement <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                    </button>
+                    <p style="font-size: 0.8rem; color: var(--text-gray); margin-top: 1rem; text-align: center;">
+                        <i class="fas fa-lock"></i> Paiement sécurisé par Mobile Money
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer injected by app.js -->
+
+    <script src="assets/js/data.js?v=2.0"></script>
+    <script src="assets/js/utils.js?v=2.0"></script>
+    <script src="assets/js/store.js?v=2.0"></script>
+    <script src="assets/js/app.js?v=2.0"></script>
+    <script src="assets/js/cart.js?v=2.0"></script>
+</body>
+</html>

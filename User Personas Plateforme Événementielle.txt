@@ -1,0 +1,232 @@
+User Personas détaillés – Plateforme
+événementielle
+Ce document présente une version approfondie et structurée des personas, avec : - Problèmes
+détaillés (pain points réels) - Besoins fonctionnels précis - Lien direct avec les fonctionnalités produit -
+Priorisation MVP
+
+
+
+
+PERSONA A – ORGANISATEUR ÉTUDIANT DÉBROUILLARD
+Catégorie : Organisateurs à petit budget (Étudiants & Associations)
+
+
+Personnes réelles représentées :
+- N'TCHA Romulus – Étudiant entrepreneur
+- Grâce H. – Étudiante organisatrice
+- N'DAH Carlos – Leader associatif
+
+
+Problèmes détaillés
+
+     • Difficulté à comparer les prix → risque de se faire surfacturer
+     • Informations éparpillées (WhatsApp, appels, bouche-à-oreille)
+     • Déplacements physiques coûteux et chronophages
+     • Annulations de dernière minute sans garantie
+     • Aucun visuel fiable du matériel
+
+Besoins réels
+
+     • Transparence totale sur les prix
+     • Visualisation claire du matériel
+     • Réservation rapide sans engagement total
+     • Moyens de paiement flexibles (acompte)
+
+Fonctionnalités clés associées
+
+     • Catalogue avec photos et prix affichés
+     • Filtres « petit budget » / « étudiant »
+     • Paiement d’acompte via Mobile Money
+     • Confirmation automatique
+
+
+
+
+PERSONA B – ORGANISATEUR INDÉPENDANT / SEMI-PRO
+Catégorie : Organisateurs indépendants & semi-professionnels
+
+
+Personnes réelles représentées :
+- ABALO Trésor – Jeune diplômé facilitateur
+- Aïcha K. – Organisatrice semi-professionnelle
+
+
+
+
+                                                     1
+Problèmes détaillés
+
+     • Trop de conversations informelles non suivies
+     • Mauvaise coordination entre plusieurs prestataires
+     • Perte de crédibilité auprès des clients
+     • Calcul manuel des coûts logistiques
+
+Besoins réels
+
+     • Centralisation des réservations
+     • Vision claire des disponibilités
+     • Outils de suivi et d’historique
+
+Fonctionnalités clés associées
+
+     • Tableau de bord organisateur
+     • Calendrier de disponibilité
+     • Notifications automatiques
+     • Calcul automatique des coûts (transport inclus)
+
+
+
+
+PERSONA C – PARTICULIER OCCASIONNEL
+Catégorie : Particuliers organisateurs occasionnels
+
+
+Personnes réelles représentées :
+- Marc D. – Particulier organisateur
+
+
+Problèmes détaillés
+
+     • Manque total d’expérience
+     • Peur des arnaques
+     • Stress lié à l’organisation
+
+Besoins réels
+
+     • Simplicité maximale
+     • Réassurance
+     • Accompagnement implicite
+
+Fonctionnalités clés associées
+
+     • Parcours simplifié « organiser un événement »
+     • Avis clients vérifiés
+     • Packs événementiels clés en main
+
+
+
+
+PERSONA D – RESPONSABLE D’ENTREPRISE
+Catégorie : Entreprises & institutions
+
+
+
+
+                                                   2
+Personnes réelles représentées :
+- Didier K. – Responsable administratif
+
+
+Problèmes détaillés
+
+      • Devis imprécis
+      • Prestataires non professionnels
+      • Retards incompatibles avec le cadre pro
+
+Besoins réels
+
+      • Rigueur administrative
+      • Prestataires certifiés
+      • Documents officiels
+
+Fonctionnalités clés associées
+
+      • Comptes entreprise
+      • Devis et factures téléchargeables
+      • Prestataires vérifiés
+
+
+
+
+PERSONA E – LOUEUR TRADITIONNEL / JEUNE LOUEUR
+Catégorie : Loueurs peu ou pas digitalisés
+
+
+Personnes réelles représentées :
+- Jean-Baptiste S. – Loueur traditionnel
+- Ulrich S. – Jeune loueur
+
+
+Problèmes détaillés
+
+      • Faible visibilité
+      • Annulations fréquentes
+      • Mauvaise gestion des disponibilités
+
+Besoins réels
+
+      • Plus de clients
+      • Réservations fiables
+      • Paiements sécurisés
+
+Fonctionnalités clés associées
+
+      • Profil loueur public
+      • Calendrier automatique
+      • Paiement sécurisé
+
+
+
+
+                                                  3
+PERSONA F – LOUEUR STRUCTURÉ / ENTREPRISE DE LOCATION
+Catégorie : Loueurs professionnels & entreprises de location
+
+
+Personnes réelles représentées :
+- Samuel T. – Loueur structuré
+- Arnaud T. – Événement Pro Bénin
+
+
+Problèmes détaillés
+
+     • Suivi manuel des stocks
+     • Manque de statistiques
+     • Gestion multi-clients complexe
+
+Besoins réels
+
+     • Automatisation
+     • Pilotage de l’activité
+     • Données exploitables
+
+Fonctionnalités clés associées
+
+     • Dashboard avancé
+     • Gestion des stocks
+     • Statistiques et reporting
+
+
+
+
+PRIORISATION MVP
+
+Personas prioritaires pour le MVP
+
+    1. Persona A – Organisateur étudiant
+    2. Persona E – Loueur traditionnel
+    3. Persona C – Particulier occasionnel
+
+👉 Ces profils génèrent rapidement de l’usage et valident le modèle.
+
+
+Fonctionnalités MVP essentielles
+
+     • Catalogue + filtres
+     • Réservation simple
+     • Paiement Mobile Money
+     • Profils loueurs
+     • Confirmation automatique
+
+
+
+
+Vision post-MVP
+     • Personas B & D → montée en gamme
+     • Persona F → version pro / premium
+
+
+
+
+                                                  4
+

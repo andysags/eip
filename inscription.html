@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte - EventBenin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vpf22vkhh5");
+    </script>
+</head>
+<body class="auth-v2-body">
+
+    <div class="auth-v2-container" style="max-width: 520px;">
+        <!-- Brand / Return Link -->
+        <a href="index.html" class="auth-v2-logo">
+            <i class="fas fa-layer-group"></i> EventBenin.
+        </a>
+
+        <!-- Glass Card -->
+        <div class="glass-card">
+            
+            <!-- Auth Tabs -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-client" onclick="switchTab('client')">
+                    <i class="fas fa-user"></i> Devenir Client
+                </button>
+                <button class="auth-tab" id="tab-loueur" onclick="switchTab('loueur')">
+                    <i class="fas fa-store"></i> Devenir Loueur
+                </button>
+            </div>
+
+            <div class="auth-content" style="padding: 2rem;">
+                <div class="text-center mb-4">
+                    <h2 class="auth-title" id="auth-title">Rejoignez-nous 🚀</h2>
+                    <p class="auth-subtitle" id="auth-subtitle">Créez votre compte en quelques secondes.</p>
+                </div>
+
+                <form id="signup-form">
+                    <div class="auth-input-group">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" class="auth-input" id="name" placeholder="Nom complet" required>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="auth-input" id="email" placeholder="Adresse Email" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="auth-input-group">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="auth-input" id="password" placeholder="Mot de passe" required>
+                        </div>
+                        <div class="auth-input-group">
+                            <i class="fas fa-shield-alt input-icon"></i>
+                            <input type="password" class="auth-input" id="confirm-password" placeholder="Confirmer" required>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 1.5rem; text-align: center;">
+                        En vous inscrivant, vous acceptez nos <a href="#" style="color: var(--primary-color);">Conditions Générales</a>.
+                    </p>
+
+                    <button type="submit" id="submit-btn" class="btn btn-primary btn-block btn-lg glow-on-hover">
+                        Créer mon compte
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    Déjà membre ? <a href="connexion.html" style="font-weight: 700;">Se connecter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/store.js?v=2.0"></script>
+    <script>
+        let currentRole = 'client';
+
+        function switchTab(role) {
+            currentRole = role;
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            
+            if (role === 'client') {
+                document.getElementById('tab-client').classList.add('active');
+                document.getElementById('auth-title').textContent = "Espace Client";
+                document.getElementById('auth-subtitle').textContent = "Trouvez le matériel parfait pour vos événements.";
+            } else {
+                document.getElementById('tab-loueur').classList.add('active');
+                document.getElementById('auth-title').textContent = "Espace Loueur";
+                document.getElementById('auth-subtitle').textContent = "Mettez votre matériel en location et gagnez de l'argent.";
+            }
+        }
+
+        // Auto-select role from URL
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const role = params.get('role');
+            if (role === 'vendor' || role === 'loueur') {
+                switchTab('loueur');
+            }
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (password !== confirmPassword) {
+                alert("Les mots de passe ne correspondent pas !");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("Le mot de passe doit faire au moins 6 caractères.");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inscription...';
+
+            try {
+                const response = await fetch(Utils.API_BASE_URL + '/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, user_type: currentRole }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Bienvenue chez EventBenin ! Votre compte est créé. Connectez-vous.');
+                    window.location.href = 'connexion.html';
+                } else {
+                    alert(data.error || 'Erreur lors de l\'inscription.');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur de connexion au serveur.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Créer mon compte';
+            }
+        });
+    </script>
+</body>
+</html>

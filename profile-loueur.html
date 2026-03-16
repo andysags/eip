@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Loueur - EventBenin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Segoe+UI&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vpf22vkhh5");
+    </script>
+</head>
+<body>
+
+    <!-- Header injected by app.js -->
+
+    <!-- Vendor Profile Header -->
+    <div class="bg-light section" style="padding: 4rem 0 2rem;">
+        <div class="container">
+            <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                <div style="width: 120px; height: 120px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--primary-color); box-shadow: var(--shadow-md);" id="vendor-avatar">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div>
+                    <h1 class="section-title" id="vendor-name" style="margin-bottom: 0.5rem;">Nom du Loueur</h1>
+                    <div style="color: var(--text-gray); margin-bottom: 1rem;">
+                        <span style="margin-right: 1.5rem;"><i class="fas fa-map-marker-alt"></i> Cotonou, Bénin</span>
+                        <span style="margin-right: 1.5rem;"><i class="fas fa-star text-warning"></i> 4.8/5 (120 avis)</span>
+                        <span><i class="fas fa-check-circle text-success"></i> Identité Vérifiée</span>
+                    </div>
+                    <p id="vendor-bio" style="max-width: 600px;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor's Products -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title" style="margin-bottom: 2rem; font-size: 1.5rem;">Catalogue du Loueur</h2>
+            
+            <div id="vendor-products" class="product-grid">
+                <!-- Injected by JS -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Chargement du catalogue...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer injected by app.js -->
+
+    <script src="assets/js/data.js?v=2.0"></script>
+    <script src="assets/js/utils.js?v=2.0"></script>
+    <script src="assets/js/store.js?v=2.0"></script>
+    <script src="assets/js/app.js?v=2.0"></script>
+    <script>
+        document.addEventListener('appReady', () => {
+            const params = new URLSearchParams(window.location.search);
+            const vendorId = params.get('id');
+            const currentUser = Store.getUser();
+            
+            const vendorNameEl = document.getElementById('vendor-name');
+            const vendorBioEl = document.getElementById('vendor-bio');
+            const productGrid = document.getElementById('vendor-products');
+
+            let displayVendor = null;
+
+            if (vendorId) {
+                // View specific vendor profile (Public)
+                // In MVP we just use mock data if not current user
+                displayVendor = {
+                    name: "EventPro Locations",
+                    bio: "Spécialiste de la sonorisation et de l'éclairage pour mariages et conférences depuis 10 ans.",
+                    id: vendorId
+                };
+            } else if (currentUser && currentUser.user_metadata?.user_type === 'loueur') {
+                // View own profile
+                displayVendor = {
+                    name: currentUser.user_metadata.name || currentUser.email,
+                    bio: currentUser.user_metadata.bio || "Aucune description fournie pour le moment. Allez dans les paramètres de votre tableau de bord pour en ajouter une.",
+                    id: currentUser.id
+                };
+            }
+
+            if (displayVendor) {
+                vendorNameEl.textContent = displayVendor.name;
+                vendorBioEl.textContent = displayVendor.bio;
+                
+                // Show initials in avatar if no image
+                const avatar = document.getElementById('vendor-avatar');
+                if (avatar) {
+                    const initials = displayVendor.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                    avatar.innerHTML = `<span style="font-weight: 800;">${initials}</span>`;
+                }
+            }
+
+            // Load Products
+            const allProducts = Store.getAllProducts();
+            let filteredProducts = allProducts;
+            
+            if (displayVendor) {
+                // Filter by displayVendor.id if products have vendorId
+                filteredProducts = allProducts.filter(p => p.vendorId === displayVendor.id);
+                
+                // Fallback for demo: if no products for this specific vendor, show some related ones
+                if (filteredProducts.length === 0 && !vendorId) {
+                    filteredProducts = allProducts.slice(0, 3); // Show 3 first products as placeholder
+                }
+            }
+
+            if (filteredProducts.length === 0) {
+                productGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+                        <h3>Aucun produit trouvé</h3>
+                        <p>Ce loueur n'a pas encore ajouté de produit.</p>
+                    </div>
+                `;
+            } else {
+                productGrid.innerHTML = filteredProducts.map(product => `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}">
+                            ${product.isPopular ? '<span class="badge badge-popular">Populaire</span>' : ''}
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category">${product.category}</span>
+                            <h3>${product.name}</h3>
+                            <div class="product-price">${Utils.formatCurrency(product.price)} / jour</div>
+                            <div class="product-actions">
+                                <a href="product-details.html?id=${product.id}" class="btn btn-outline btn-sm">Voir</a>
+                                <button class="btn btn-primary btn-sm" onclick="Store.addToCart('${product.id}')">Ajouter</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        });
+    </script>
+</body>
+</html>

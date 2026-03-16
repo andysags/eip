@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventBenin Location - Simplifiez vos événements</title>
+    <meta name="description"
+        content="La première plateforme de location de matériel événementiel au Bénin. Sonorisation, chaises, tentes, décoration et plus encore.">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Segoe+UI&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vpf22vkhh5");
+    </script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-layer-group"></i> EventBenin<span style="color:var(--secondary-color)">.</span>
+            </a>
+            <div class="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link" style="color: var(--primary-color);">Accueil</a></li>
+                <li><a href="catalogue.html" class="nav-link">Catalogue</a></li>
+                <li><a href="#comment-ca-marche" class="nav-link">Comment ça marche</a></li>
+                <li><a href="dashboard-loueur.html" class="nav-link">Espace Loueurs</a></li>
+                <li><a href="connexion.html" class="btn btn-primary">Connexion</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="accueil" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Simplifiez l'organisation de vos événements au Bénin</h1>
+                <p>Fini le parcours du combattant. Trouvez et louez tout votre matériel événementiel sur une seule
+                    plateforme : sonorisation, mobilier, décoration et plus encore.</p>
+
+                <!-- Search Bar Mockup -->
+                <div class="search-bar">
+                    <input type="text" class="search-input"
+                        placeholder="Que cherchez-vous ? (ex: Chaises, Sonorisation...)">
+                    <input type="date" class="search-input" style="max-width: 180px;">
+                    <button class="btn btn-primary" onclick="window.location.href='catalogue.html'">Rechercher</button>
+                </div>
+
+                <div class="hero-buttons">
+                    <a href="catalogue.html" class="btn btn-secondary">Voir le catalogue</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Featured Products Section -->
+    <section id="catalogue" class="section bg-light">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title">Nos Produits Populaires</h2>
+                <p class="section-subtitle">Découvrez notre sélection de matériel prêt à louer.</p>
+            </div>
+
+            <div class="product-grid">
+                <!-- Products will be injected by JavaScript -->
+                <div id="featured-products-loader" class="text-center" style="grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i><br>Chargement des produits...
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center" style="margin-top: 3rem;">
+            <a href="catalogue.html" class="btn btn-primary">Voir tout le catalogue</a>
+        </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="comment-ca-marche" class="section">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title">Comment ça marche ?</h2>
+                <p class="section-subtitle">Une expérience de location fluide, de la recherche à la livraison.</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-search"></i></div>
+                        <h3>Trouvez & Comparez</h3>
+                        <p>Accédez à l'inventaire centralisé des meilleurs loueurs. Prix transparents, photos réelles,
+                            zéro surprise.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
+                        <h3>Réservez en 3 Clics</h3>
+                        <p>Sélectionnez vos dates. Notre système vérifie la disponibilité instantanément. Plus besoin
+                            d'appeler 10 prestataires.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <h3>Paiement Sécurisé</h3>
+                        <p>Validez via Mobile Money. Votre argent est sécurisé et n'est reversé au loueur qu'après
+                            confirmation.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-truck-loading"></i></div>
+                        <h3>Livraison Sereine</h3>
+                        <p>Optez pour la livraison sur site. Le matériel vient à vous, vous vous concentrez sur votre
+                            événement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition Section -->
+    <section class="section bg-light">
+        <div class="container">
+            <div class="value-grid">
+                <div class="value-image">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Event Setup" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);">
+                </div>
+                <div class="value-content">
+                    <h2 class="section-title">Pourquoi choisir EventBenin ?</h2>
+                    <p style="margin-bottom: 2rem;">Nous résolvons les problèmes d'opacité des prix et de logistique
+                        complexe.</p>
+
+                    <ul class="value-list">
+                        <li>
+                            <i class="fas fa-check-circle fa-lg"></i>
+                            <div>
+                                <strong>Transparence Totale</strong>
+                                <p>Prix affichés clairement, incluant commission et garantie.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle fa-lg"></i>
+                            <div>
+                                <strong>Gain de Temps</strong>
+                                <p>Plus besoin d'appeler 10 fournisseurs. Tout est centralisé.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle fa-lg"></i>
+                            <div>
+                                <strong>Sécurité Garantie</strong>
+                                <p>Paiements sécurisés et gestion des cautions simplifiée.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners / Loueurs Section -->
+    <section id="loueurs" class="section partners-cta">
+        <div class="container">
+            <h2 class="section-title">Vous êtes loueur de matériel ?</h2>
+            <p class="section-subtitle">Rejoignez la révolution événementielle et boostez votre activité.</p>
+
+            <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+                <div style="max-width: 300px;">
+                    <i class="fas fa-store fa-2x" style="color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h4 style="color: white; margin-bottom: 0.5rem;">Vitrine Digitale</h4>
+                    <p style="font-size: 0.9rem;">Une visibilité accrue auprès d'une clientèle plus large.</p>
+                </div>
+                <div style="max-width: 300px;">
+                    <i class="fas fa-chart-line fa-2x" style="color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h4 style="color: white; margin-bottom: 0.5rem;">Gestion Simplifiée</h4>
+                    <p style="font-size: 0.9rem;">Gérez vos stocks et réservations depuis un seul endroit.</p>
+                </div>
+            </div>
+
+            <a href="inscription.html?role=vendor" class="btn btn-primary">Devenir Partenaire</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>EventBenin.</h3>
+                    <p>La plateforme de référence pour la location de matériel événementiel au Bénin. Simple, rapide,
+                        sécurisé.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Plateforme</h4>
+                    <ul>
+                        <li><a href="catalogue.html">Catalogue</a></li>
+                        <li><a href="#comment-ca-marche">Comment ça marche</a></li>
+                        <li><a href="#">Tarifs</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Légal</h4>
+                    <ul>
+                        <li><a href="#">Conditions Générales</a></li>
+                        <li><a href="#">Politique de Confidentialité</a></li>
+                        <li><a href="#">Mentions Légales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> contact@eventbenin.bj</li>
+                        <li><i class="fas fa-phone"></i> +229 01 23 45 67</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Cotonou, Bénin</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 EventBenin. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/utils.js?v=2.0"></script>
+    <script src="assets/js/store.js?v=2.0"></script>
+    <script src="assets/js/app.js?v=2.0"></script> <!-- for nav -->
+    <script src="assets/js/script.js?v=2.0"></script>
+</body>
+
+</html>

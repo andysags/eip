@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Loueur v2.1 - EventBenin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Segoe+UI&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Custom enhancements for dashboard forms */
+        .form-control {
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 135, 81, 0.1);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            background: #f9fafb;
+            border: 2px dashed #e5e7eb;
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: var(--primary-color);
+            background: #f0fdf4;
+        }
+    </style>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vpf22vkhh5");
+    </script>
+</head>
+
+<body class="bg-light">
+
+    <!-- Navbar injected by app.js -->
+
+    <div class="container" style="margin-top: 2rem;">
+        <div class="dashboard-grid">
+
+            <!-- Sidebar -->
+            <aside class="dashboard-sidebar">
+                <button class="btn btn-outline mobile-filter-toggle" id="dashboard-toggle"
+                    style="width: 100%; margin-bottom: 1rem;">
+                    <i class="fas fa-bars"></i> Menu Dashboard
+                </button>
+                <nav id="dashboard-nav" class="sidebar-content">
+                    <a href="#overview" class="dash-nav-item active"><i class="fas fa-home"></i> Vue d'ensemble</a>
+                    <a href="#products" class="dash-nav-item"><i class="fas fa-box"></i> Mes Produits</a>
+                    <a href="#calendar" class="dash-nav-item"><i class="fas fa-calendar-alt"></i> Calendrier <span
+                            id="pending-count"
+                            style="background: var(--accent-color); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: auto; display: none;">0</span></a>
+                    <a href="#stats" class="dash-nav-item"><i class="fas fa-chart-bar"></i> Statistiques</a>
+                    <a href="#settings" class="dash-nav-item"><i class="fas fa-cog"></i> Paramètres</a>
+                    <a href="#logout" onclick="Store.logout()" class="dash-nav-item"
+                        style="color: var(--accent-color); margin-top: 2rem;"><i class="fas fa-sign-out-alt"></i>
+                        Déconnexion</a>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 class="section-title" style="font-size: 1.5rem; margin: 0;">Vue d'ensemble</h2>
+                    <button class="btn btn-sm btn-outline" onclick="renderDashboard()"><i class="fas fa-sync-alt"></i>
+                        Actualiser</button>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                        <div>
+                            <div class="stat-value" id="stats-revenue">0</div>
+                            <div class="stat-label">Revenus (FCFA)</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                        <div>
+                            <div class="stat-value" id="stats-res-count">0</div>
+                            <div class="stat-label">Réservations</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                        <div>
+                            <div class="stat-value" id="stats-products">0</div>
+                            <div class="stat-label">Produits en ligne</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div
+                    style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.5rem;">
+                    <h3 style="font-weight: 700; margin-bottom: 1rem;">Réservations Récentes</h3>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client / Lieu</th>
+                                    <th>Date Événement</th>
+                                    <th>Montant</th>
+                                    <th>Statut</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- Main Content -->
+        <main id="main-content">
+            <!-- Views injected here -->
+        </main>
+    </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="view-overview">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 class="section-title" style="font-size: 1.5rem; margin: 0;">Vue d'ensemble</h2>
+            <button class="btn btn-sm btn-outline" onclick="renderLoueurView('overview')"><i
+                    class="fas fa-sync-alt"></i> Actualiser</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                <div>
+                    <div class="stat-value" id="stats-revenue">0</div>
+                    <div class="stat-label">Revenus (FCFA)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div>
+                    <div class="stat-value" id="stats-res-count">0</div>
+                    <div class="stat-label">Réservations</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                <div>
+                    <div class="stat-value" id="stats-products">0</div>
+                    <div class="stat-label">Produits en ligne</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div
+            style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.5rem;">
+            <h3 style="font-weight: 700; margin-bottom: 1rem;">Réservations Récentes</h3>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Client / Lieu</th>
+                            <th>Date Événement</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table">
+                        <!-- Injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="view-products">
+        <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">Mes Produits</h2>
+        <!-- Stock Management View -->
+        <div
+            style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.5rem;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button class="btn btn-primary btn-sm" onclick="renderLoueurView('add-product')"><i
+                        class="fas fa-plus"></i> Nouveau Produit</button>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Catégorie</th>
+                            <th>Prix / Jour</th>
+                            <th>Stock Total</th>
+                            <th>Dispo. Aujourd'hui</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="view-calendar">
+        <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">Calendrier des Commandes</h2>
+        <div
+            style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.5rem;">
+            <p class="mb-1 text-gray-700">Commandes prévues pour les 7 prochains jours :</p>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Commandes</th>
+                            <th>Articles Réservés</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="view-add-product">
+        <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">Ajouter un Produit</h2>
+        <div
+            style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 2rem; max-width: 800px;">
+            <form id="add-product-form" onsubmit="handleAddProduct(event)">
+                <div class="form-group">
+                    <label class="form-label">Nom du produit</label>
+                    <input type="text" class="form-control" name="name" required placeholder="Ex: Pack Lumière RGB">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Catégorie</label>
+                        <select class="form-control" name="category">
+                            <option value="sonorisation">Sonorisation</option>
+                            <option value="lumiere">Lumière</option>
+                            <option value="mobilier">Mobilier</option>
+                            <option value="packs">Packs</option>
+                            <option value="tentes">Tentes & Chapiteaux</option>
+                            <option value="eclairage">Éclairage</option>
+                            <option value="decoration">Décoration</option>
+                            <option value="energie">Énergie</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prix journalier (FCFA)</label>
+                        <input type="number" class="form-control" name="price" required min="1000">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Stock Initial</label>
+                        <input type="number" class="form-control" name="stock" required min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Image du produit</label>
+                        <input type="file" class="form-control" name="image" accept="image/*" required>
+                        <small style="color: grey;">Upload vers Supabase Storage</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" rows="4" required></textarea>
+                </div>
+
+                <div style="text-align: right; margin-top: 1rem;">
+                    <button type="submit" class="btn btn-primary" id="btn-add-prod"><i class="fas fa-plus"></i> Créer le
+                        produit</button>
+                </div>
+            </form>
+        </div>
+    </template>
+
+    <template id="view-stats">
+        <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">Statistiques</h2>
+
+        <div class="stats-grid" style="margin-bottom: 2rem;">
+            <!-- Simple Mock Stats -->
+            <div class="stat-card">
+                <div class="stat-value" id="stats-total-orders">0</div>
+                <div class="stat-label">Commandes Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stats-avg-order">0</div>
+                <div class="stat-label">Panier Moyen (FCFA)</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+            <div
+                style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 2rem;">
+                <h4 style="margin-bottom: 1rem;">Revenus par Mois (2025-2026)</h4>
+                <!-- Visual Mock of a Bar Chart -->
+                <div style="display: flex; align-items: flex-end; height: 200px; gap: 10px; padding-top: 20px;">
+                    <div style="flex:1; background: #e5e7eb; border-radius: 4px; height: 30%; position: relative;"
+                        title="Jan"><span
+                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem;">Jan</span>
+                    </div>
+                    <div style="flex:1; background: #e5e7eb; border-radius: 4px; height: 45%; position: relative;"
+                        title="Fév"><span
+                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem;">Fév</span>
+                    </div>
+                    <div style="flex:1; background: var(--primary-color); border-radius: 4px; height: 75%; position: relative;"
+                        title="Mar (Actuel)"><span
+                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem; font-weight: 700;">Mar</span>
+                    </div>
+                    <div style="flex:1; background: #e5e7eb; border-radius: 4px; height: 10%; position: relative;"
+                        title="Avr"><span
+                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem;">Avr</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="view-settings">
+        <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">Paramètres Loueur</h2>
+        <div
+            style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 2rem; max-width: 800px;">
+            <form onsubmit="handleSettingsUpdate(event)">
+                <div style="display: flex; align-items: center; margin-bottom: 2rem;">
+                    <div
+                        style="width: 80px; height: 80px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1.5rem; font-size: 2rem; color: #aaa;">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm">Changer le logo</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nom de l'entreprise</label>
+                    <input type="text" class="form-control" value="EventPro Locations" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email de contact</label>
+                    <input type="email" class="form-control" value="vendor@eventbenin.bj" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Téléphone</label>
+                    <input type="tel" class="form-control" value="+229 01 00 00 00">
+                </div>
+
+                <div style="text-align: right;">
+                    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                </div>
+            </form>
+        </div>
+    </template>
+
+    <script src="assets/js/data.js?v=2.0"></script>
+    <script src="assets/js/utils.js?v=2.0"></script>
+    <script src="assets/js/store.js?v=2.0"></script>
+    <script src="assets/js/app.js?v=2.0"></script>
+    <script>
+        document.addEventListener('appReady', () => {
+            const user = Store.getUser();
+            const metadata = user?.user_metadata || {};
+            // Allow vendor check logic
+            if (!user || metadata.user_type !== 'loueur') {
+                console.warn("Accès dashboard loueur interdit.");
+                window.location.href = 'connexion.html';
+                return;
+            }
+
+            // Bind Navigation
+            document.querySelectorAll('.dash-nav-item').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = e.currentTarget.getAttribute('href').substring(1);
+                    if (target && target !== 'logout') {
+                        renderLoueurView(target);
+                        document.querySelectorAll('.dash-nav-item').forEach(l => l.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                    }
+                });
+            });
+
+            // Mobile Dashboard Toggle
+            const dashToggle = document.getElementById('dashboard-toggle');
+            const dashNav = document.getElementById('dashboard-nav');
+            if (dashToggle && dashNav) {
+                dashToggle.addEventListener('click', () => {
+                    const isHidden = dashNav.style.display === 'none' || dashNav.style.display === '';
+                    dashNav.style.display = isHidden ? 'flex' : 'none';
+                    dashNav.style.flexDirection = 'column';
+                });
+            }
+
+            renderLoueurView('overview');
+            updatePendingCount();
+        });
+
+        async function updatePendingCount() {
+            const allOrders = await Store.getVendorOrders();
+            const pending = allOrders.filter(o => o.status === 'En attente').length;
+            const pendingBadge = document.getElementById('pending-count');
+            if (pending > 0) {
+                pendingBadge.textContent = pending;
+                pendingBadge.style.display = 'inline-block';
+            } else {
+                pendingBadge.style.display = 'none';
+            }
+        }
+
+        function renderLoueurView(viewName) {
+            const mainContent = document.getElementById('main-content');
+            const template = document.getElementById(`view-${viewName}`);
+
+            if (!template) return;
+
+            mainContent.innerHTML = '';
+            mainContent.appendChild(template.content.cloneNode(true));
+
+            if (viewName === 'overview') {
+                renderOverview();
+            } else if (viewName === 'products') {
+                renderProductsStock();
+            } else if (viewName === 'calendar') {
+                renderCalendar();
+            } else if (viewName === 'stats') {
+                renderStats();
+            }
+        }
+
+        // --- Form Handlers ---
+
+        window.handleAddProduct = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('#btn-add-prod');
+            const originalBtnText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+            btn.disabled = true;
+
+            try {
+                const formData = new FormData(form);
+                const fileInput = form.querySelector('input[type="file"]');
+                let imageUrl = '';
+
+                // 1. Upload Image
+                if (fileInput.files.length > 0) {
+                    const uploadData = new FormData();
+                    uploadData.append('file', fileInput.files[0]);
+
+                    const session = Store.getSession();
+                    const token = session ? session.access_token : null;
+
+                    const uploadRes = await fetch(Utils.API_BASE_URL + '/api/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: uploadData
+                    });
+
+                    if (!uploadRes.ok) {
+                        if (uploadRes.status === 401) {
+                            alert("Votre session a expiré. Veuillez vous reconnecter.");
+                            Store.logout();
+                            return;
+                        }
+                        const errData = await uploadRes.json().catch(() => ({ error: uploadRes.statusText }));
+                        throw new Error(`Erreur upload: ${errData.error || uploadRes.statusText}`);
+                    }
+                    const uploadJson = await uploadRes.json();
+                    imageUrl = uploadJson.url;
+                }
+
+                // 2. Create Product
+                const product = {
+                    name: formData.get('name'),
+                    category: formData.get('category'),
+                    price: parseInt(formData.get('price')),
+                    stock: parseInt(formData.get('stock')),
+                    image: imageUrl,
+                    description: formData.get('description'),
+                    isPopular: false,
+                    reviews: [],
+                    vendorId: Store.getUser()?.id
+                };
+
+                const newProduct = await Store.addProduct(product);
+
+                if (newProduct) {
+                    Utils.showToast('Produit ajouté avec succès !');
+                    renderLoueurView('products');
+                } else {
+                    Utils.showToast("Erreur lors de la création du produit", "error");
+                }
+
+            } catch (err) {
+                console.error(err);
+                Utils.showToast(err.message || "Une erreur est survenue", "error");
+            } finally {
+                btn.innerHTML = originalBtnText;
+                btn.disabled = false;
+            }
+        };
+
+        window.handleSettingsUpdate = (e) => {
+            e.preventDefault();
+            // Mock update
+            Utils.showToast('Paramètres mis à jour !');
+        };
+
+        // --- Renderers ---
+
+        async function renderStats() {
+            const allOrders = await Store.getVendorOrders();
+            // Calculate total revenue from ITEMS belonging to vendor (which we returned in the API)
+            // But API returned Orders structure. 
+            // In Store.getVendorOrders we just default return fetch json.
+            // Let's assume order.items has the items relevant to vendor and their 'total' property calculated in backend/routes/orders.js
+
+            let totalRevenue = 0;
+            let totalItemsSold = 0;
+
+            allOrders.forEach(order => {
+                if (order.items) {
+                    order.items.forEach(item => {
+                        totalRevenue += (item.price * item.quantity); // or item.total
+                        totalItemsSold += item.quantity;
+                    });
+                }
+            });
+
+            const totalOrders = allOrders.length;
+            const avgOrder = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
+
+            document.getElementById('stats-total-orders').textContent = totalOrders;
+            document.getElementById('stats-avg-order').textContent = Utils.formatCurrency(avgOrder);
+        }
+
+        async function renderOverview() {
+            // Show loading state?
+            const tbody = document.getElementById('orders-table');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin"></i> Chargement...</td></tr>';
+
+            const allOrders = await Store.getVendorOrders();
+            await Store.fetchProducts(); // Ensure fresh data
+            const products = Store.getAllProducts();
+            const user = Store.getUser();
+            const myProducts = products.filter(p => p.vendor_id === user.id);
+
+            // Calcs
+            let totalRevenue = 0;
+            allOrders.forEach(order => {
+                if (order.items) {
+                    order.items.forEach(item => {
+                        totalRevenue += (item.price * item.quantity);
+                    });
+                }
+            });
+
+            const totalRes = allOrders.length;
+
+            if (document.getElementById('stats-revenue')) document.getElementById('stats-revenue').textContent = Utils.formatCurrency(totalRevenue);
+            if (document.getElementById('stats-res-count')) document.getElementById('stats-res-count').textContent = totalRes;
+            if (document.getElementById('stats-products')) document.getElementById('stats-products').textContent = myProducts.length;
+
+            // Table
+            // Re-grab tbody in case view changed, though we are in renderOverview
+            const tableBody = document.getElementById('orders-table');
+            if (!tableBody) return;
+
+            if (allOrders.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Aucune commande pour le moment.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = allOrders.map(order => {
+                const statusColor =
+                    order.status === 'En attente' ? 'background: #FEF3C7; color: #92400E;' :
+                        order.status === 'Confirmé' ? 'background: #DEF7EC; color: #03543F;' :
+                            'background: #F3F4F6; color: #1F2937;';
+
+                const actionBtn = order.status === 'En attente'
+                    ? `<button class="btn btn-sm btn-primary" onclick="updateOrderStatus('${order.id}', 'Confirmé')">Valider</button>`
+                    : `<span style="color: var(--text-gray); font-size: 0.8rem;">Aucune action</span>`;
+
+                // Calculate total for this vendor in this order
+                let orderTotal = 0;
+                if (order.items) {
+                    orderTotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                }
+
+                return `
+                    <tr>
+                        <td><span style="font-family: monospace;">${order.id.substring(0, 8)}...</span></td>
+                        <td>
+                            <div style="font-weight: 600;">${order.user ? order.user.full_name : 'Client'}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-gray);">${order.event_date ? Utils.formatDate(order.event_date) : 'N/A'}</div>
+                        </td>
+                        <td>${Utils.formatDate(order.created_at)}</td>
+                        <td style="font-weight: 700;">${Utils.formatCurrency(orderTotal)}</td>
+                        <td><span style="${statusColor} padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">${order.status}</span></td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function renderProductsStock() {
+            // This still uses Store.getAllProducts which fetches from API (assuming we updated it previously or it was already API based? 
+            // Wait, Store.getAllProducts in previous turn was: 
+            // return JSON.parse(localStorage.getItem(Store.KEYS.PRODUCTS));
+            // Ah! We updated Store.fetchProducts but Store.getAllProducts might still be local?
+            // Let's check Store.js content...
+            // "fetchProducts: async () => { ... const products = await response.json(); localStorage.setItem(..., JSON.stringify(products)); return products; }"
+            // "getAllProducts: () => { return JSON.parse(localStorage.getItem(Store.KEYS.PRODUCTS)); }"
+            // So getAllProducts gets from local cache, which is populated by fetchProducts.
+            // We should ensure fetchProducts is called at init or here.
+
+            // For now, let's assume App.init calls fetchProducts or we call it here.
+            await Store.fetchProducts(); // Refresh cache
+            const products = Store.getAllProducts(); // Read cache
+
+            // Filter by vendor?
+            const user = Store.getUser();
+            const vendorProducts = products.filter(p => p.vendor_id === user.id);
+
+            const tbody = document.getElementById('products-table');
+            // const today = new Date().toISOString().split('T')[0];
+
+            tbody.innerHTML = vendorProducts.map(p => {
+                // Mock availablity for now as we don't have complex calendar logic in backend yet
+                const available = p.stock;
+
+                return `
+                    <tr>
+                         <td>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <img src="${p.image}" alt="" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+                                <span style="font-weight: 600;">${p.name}</span>
+                            </div>
+                        </td>
+                        <td><span>${p.category}</span></td>
+                        <td>${Utils.formatCurrency(p.price)}</td>
+                        <td><span style="font-weight: 700;">${p.stock}</span></td>
+                        <td>
+                            <span style="color: ${available > 0 ? 'var(--primary-color)' : 'var(--accent-color)'}; font-weight: 700;">
+                                ${available}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" style="color: red; border-color: red;" onclick="handleDeleteProduct('${p.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.handleDeleteProduct = async (id) => {
+            const success = await Store.deleteProduct(id);
+            if (success) {
+                renderLoueurView('products');
+            }
+        };
+
+        async function renderCalendar() {
+            const tbody = document.getElementById('calendar-table');
+            const allOrders = await Store.getVendorOrders();
+
+            // Generate next 7 days
+            let days = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                days.push(d.toISOString().split('T')[0]); // YYYY-MM-DD
+            }
+
+            tbody.innerHTML = days.map(date => {
+                // Check if any order has event_date === date
+                const ordersForDay = allOrders.filter(o => {
+                    // o.event_date might be full ISO or just date string. Backend schema: date.
+                    return o.event_date === date;
+                });
+
+                const count = ordersForDay.length;
+                const itemsCount = ordersForDay.reduce((acc, o) => {
+                    return acc + (o.items ? o.items.reduce((s, i) => s + i.quantity, 0) : 0);
+                }, 0);
+
+                return `
+                    <tr>
+                        <td style="font-weight: 600;">${Utils.formatDate(date)}</td>
+                        <td>${count > 0 ? `<span class="badge" style="position: static;">${count}</span>` : '<span style="color: var(--text-gray);">-</span>'}</td>
+                        <td>${itemsCount > 0 ? itemsCount + ' articles' : '-'}</td>
+                    </tr>
+                 `;
+            }).join('');
+        }
+
+        window.updateOrderStatus = async (id, newStatus) => {
+            if (confirm(`Voulez-vous vraiment passer cette commande à "${newStatus}" ?`)) {
+                const success = await Store.updateOrderStatus(id, newStatus);
+                if (success) {
+                    renderLoueurView('overview');
+                    updatePendingCount();
+                    Utils.showToast("Commande validée avec succès !");
+                } else {
+                    Utils.showToast("Erreur lors de la mise à jour.", "error");
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>

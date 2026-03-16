@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - EventBenin Location</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Segoe+UI&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vpf22vkhh5");
+    </script>
+</head>
+<body>
+
+    <!-- Simplified Header for Checkout -->
+    <nav class="navbar">
+        <div class="container" style="justify-content: center;">
+            <a href="index.html" class="logo">
+                <i class="fas fa-layer-group"></i> EventBenin<span style="color:var(--secondary-color)">.</span> Pay
+            </a>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
+        
+        <div class="catalogue-layout checkout-grid">
+            
+            <!-- Steps -->
+            <div style="background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <h2 class="section-title" style="font-size: 1.5rem;">Finaliser la réservation</h2>
+                
+                <form id="checkout-form">
+                    <!-- Step 1: Info -->
+                    <div class="mb-1">
+                        <h4 style="margin-bottom: 1rem; color: var(--primary-color);">1. Informations Événement</h4>
+                        <div class="form-group">
+                            <label class="form-label">Date de l'événement</label>
+                            <input type="date" class="form-control" required id="event-date">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Lieu de livraison (Adresse précise)</label>
+                            <input type="text" class="form-control" placeholder="Ex: Cotonou, Haie Vive, Rue 123" required id="event-location">
+                        </div>
+                        
+                        <!-- Delivery Mode (Persona A/B Gap) -->
+                        <div class="form-group">
+                            <label class="form-label">Mode de Livraison</label>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="delivery" value="pickup" checked onchange="updateTotalDisplay()">
+                                        <span>Retrait en Magasin (Gratuit)</span>
+                                    </div>
+                                    <span style="font-weight: 700;">0 F</span>
+                                </label>
+                                <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="delivery" value="zone1" onchange="updateTotalDisplay()">
+                                        <span>Livraison - Cotonou Centre</span>
+                                    </div>
+                                    <span style="font-weight: 700;">1 000 F</span>
+                                </label>
+                                <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="delivery" value="zone2" onchange="updateTotalDisplay()">
+                                        <span>Livraison - Calavi / Périphérie</span>
+                                    </div>
+                                    <span style="font-weight: 700;">1 500 F</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+                    <!-- Step 2: Payment -->
+                    <div class="mb-1">
+                        <h4 style="margin-bottom: 1rem; color: var(--primary-color);">2. Paiement Mobile Money</h4>
+                        
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <label style="flex: 1; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;" class="payment-option selected">
+                                <input type="radio" name="payment" value="mtn" checked>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/MTN_Logo.svg" alt="MTN" style="height: 24px;"> MTN Momo
+                            </label>
+                            <label style="flex: 1; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;" class="payment-option">
+                                <input type="radio" name="payment" value="moov">
+                                <span style="font-weight: 700; color: #0068AA;">MOOV</span> Money
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Option de paiement</label>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                                <label style="flex: 1; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); cursor: pointer; display: flex; flex-direction: column; gap: 0.25rem;" class="payment-type-option">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="paymentType" value="full" checked onchange="updateTotalDisplay()">
+                                        <span style="font-weight: 700;">Totalité</span>
+                                    </div>
+                                    <span style="font-size: 0.8rem; color: var(--text-gray); margin-left: 1.5rem;">Payer le montant complet maintenant.</span>
+                                </label>
+                                <label style="flex: 1; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); cursor: pointer; display: flex; flex-direction: column; gap: 0.25rem;" class="payment-type-option">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="paymentType" value="deposit" onchange="updateTotalDisplay()">
+                                        <span style="font-weight: 700;">Acompte (30%)</span>
+                                    </div>
+                                    <span style="font-size: 0.8rem; color: var(--text-gray); margin-left: 1.5rem;">Réservez en payant une partie.</span>
+                                </label>
+                            </div>
+
+                            <label class="form-label">Numéro de téléphone</label>
+                            <input type="tel" class="form-control" placeholder="Ex: 66 12 34 56" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-lock"></i> Payer <span id="pay-amount">...</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Summary Sidebar -->
+            <div class="sidebar">
+                <h3 class="filter-title">Résumé de commande</h3>
+                <div id="checkout-items" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                    <!-- Items injected -->
+                </div>
+                
+                <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem;">
+                        <span>Total</span>
+                        <span id="checkout-total" class="text-primary">--</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="assets/js/data.js?v=2.0"></script>
+    <script src="assets/js/utils.js?v=2.0"></script>
+    <script src="assets/js/store.js?v=2.0"></script>
+    <!-- Basic App logic not needed here fully, but useful for basic styles/store init -->
+    <script src="assets/js/checkout.js?v=2.0"></script>
+</body>
+</html>

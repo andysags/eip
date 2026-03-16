@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue - EventBenin Location</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Segoe+UI&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vpf22vkhh5");
+    </script>
+</head>
+
+<body>
+
+    <!-- Header injected by app.js -->
+
+    <!-- Page Header -->
+    <div class="bg-light section" style="padding: 3rem 0;">
+        <div class="container">
+            <h1 class="section-title">Catalogue</h1>
+            <p class="section-subtitle" style="margin-bottom: 0;">Trouvez tout le matériel pour votre événement.</p>
+        </div>
+    </div>
+
+    <!-- Catalogue Content -->
+    <section class="section">
+        <div class="container catalogue-layout">
+
+            <!-- Sidebar Filters -->
+            <aside class="sidebar">
+                <button class="btn btn-outline mobile-filter-toggle" id="filter-toggle"
+                    style="width: 100%; margin-bottom: 1rem;">
+                    <i class="fas fa-filter"></i> Filtrer / Rechercher
+                </button>
+
+                <div class="sidebar-content" id="filter-content">
+                    <div class="search-bar"
+                        style="margin: 0 0 2rem; box-shadow: none; border: 1px solid var(--border-color); padding: 0.5rem;">
+                        <input type="text" id="catalogue-search" class="search-input" placeholder="Rechercher..."
+                            style="padding: 0.5rem;">
+                        <button class="btn btn-primary btn-sm" id="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+
+                    <div class="filter-group">
+                        <span class="filter-title">Catégories</span>
+                        <div id="category-filters">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <span class="filter-title">Prix Maximum: <span id="price-display" class="text-primary">150 000
+                                FCFA</span></span>
+                        <input type="range" id="price-range" min="0" max="200000" value="150000" step="5000"
+                            style="width: 100%;">
+                    </div>
+
+                    <button class="btn btn-outline" id="reset-filters" style="width: 100%;">Réinitialiser</button>
+                </div>
+            </aside>
+
+            <!-- Product Grid -->
+            <div>
+                <div id="products-grid" class="product-grid">
+                    <!-- Injected by JS -->
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Chargement...</div>
+                </div>
+                <div id="no-results" style="display: none; text-align: center; padding: 3rem;">
+                    <i class="fas fa-search"
+                        style="font-size: 3rem; color: var(--text-gray); margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <h3>Aucun résultat trouvé</h3>
+                    <p>Essayez d'ajuster vos filtres.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer injected by app.js -->
+
+    <script src="assets/js/utils.js?v=2.0"></script>
+    <script src="assets/js/store.js?v=2.0"></script>
+    <script src="assets/js/app.js?v=2.0"></script>
+    <script src="assets/js/catalogue.js?v=2.0"></script>
+    <script>
+        // Mobile Filter Toggle
+        const filterToggle = document.getElementById('filter-toggle');
+        const filterContent = document.getElementById('filter-content');
+
+        if (filterToggle && filterContent) {
+            filterToggle.addEventListener('click', () => {
+                const isHidden = filterContent.style.display === 'none' || filterContent.style.display === '';
+                filterContent.style.display = isHidden ? 'block' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>
