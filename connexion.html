@@ -93,7 +93,6 @@
         </div>
     </div>
 
-    <script src="assets/js/data.js?v=2.0"></script>
     <script src="assets/js/utils.js?v=2.0"></script>
     <script src="assets/js/store.js?v=2.0"></script>
     <script src="assets/js/app.js?v=2.0"></script> <!-- Ensure app.js is loaded for App.showToast -->
@@ -163,9 +162,6 @@
                     const userRole = metadata.user_type || 'client';
 
                     App.showToast('Connexion réussie !', 'success');
-
-                    // Alerte pour confirmer le rôle enregistré en base
-                    alert("Rôle détecté pour ce compte : " + userRole.toUpperCase());
 
                     setTimeout(() => {
                         if (userRole === 'admin') {

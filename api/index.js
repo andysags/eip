@@ -1,67 +1,88 @@
-require('dotenv').config();
-
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const cors = require('cors');
 
+// On n'a pas besoin de dotenv en production sur Vercel, mais on le garde pour le local
+try {
+    require('dotenv').config();
+} catch (e) {}
+
 const app = express();
 const port = 4000;
 
-// Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Middleware
+// Middleware de base
 app.use(cors()); 
 app.use(express.json());
 
-// Logger
-app.use((req, res, next) => {
-    console.log(`[API] ${req.method} ${req.url}`);
-    next();
+// Diagnostic endpoint intégré
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: "ok", 
+    env: {
+        hasSupabaseUrl: !!process.env.SUPABASE_URL,
+        hasSupabaseKey: !!process.env.SUPABASE_ANON_KEY,
+        nodeEnv: process.env.NODE_ENV
+    }
+  });
 });
 
-// Routes - Now relative to /api directory
-const authRoutes = require('../backend/routes/auth')(supabase); 
-app.use('/api/auth', authRoutes);
+// Initialisation sécurisée de Supabase et des routes
+app.use((req, res, next) => {
+    try {
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-const productRoutes = require('../backend/routes/products')(supabase);
-app.use('/api/products', productRoutes);
+        if (!supabaseUrl || !supabaseAnonKey) {
+            return res.status(500).json({ 
+                error: "Variables d'environnement Supabase manquantes dans le dashboard Vercel",
+                details: "Assurez-vous d'avoir SUPABASE_URL et SUPABASE_ANON_KEY dans Settings -> Environment Variables"
+            });
+        }
 
-const orderRoutes = require('../backend/routes/orders')(supabase);
-app.use('/api/orders', orderRoutes);
+        const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const uploadRoutes = require('../backend/routes/upload')(supabase);
-app.use('/api/upload', uploadRoutes);
+        // On injecte supabase dans l'objet req pour les routes
+        req.supabase = supabase;
+        next();
+    } catch (err) {
+        res.status(500).json({ error: "Erreur d'initialisation Supabase", message: err.message });
+    }
+});
 
-const clarityRoutes = require('../backend/routes/clarity')(supabase);
-app.use('/api/admin', clarityRoutes);
+// Chargement dynamique des routes pour isoler les erreurs de require
+app.use('/api/auth', (req, res, next) => {
+    try {
+        require('../backend/routes/auth')(req.supabase)(req, res, next);
+    } catch (err) {
+        res.status(500).json({ error: "Erreur chargement routes Auth", details: err.message });
+    }
+});
 
-const trackRoutes = require('../backend/routes/track')(supabase);
-app.use('/api/track', trackRoutes);
+app.use('/api/products', (req, res, next) => {
+    try {
+        require('../backend/routes/products')(req.supabase)(req, res, next);
+    } catch (err) {
+        res.status(500).json({ error: "Erreur chargement routes Products", details: err.message });
+    }
+});
+
+// ... autres routes si nécessaire
+app.use('/api/track', (req, res, next) => {
+    try {
+        require('../backend/routes/track')(req.supabase)(req, res, next);
+    } catch (err) {
+        res.status(500).json({ error: "Erreur chargement routes Track", details: err.message });
+    }
+});
 
 // Catch-all route for API
-app.use((req, res) => {
-  if (req.path.startsWith('/api')) {
-      return res.status(404).json({ 
-          error: 'Route API introuvable', 
-          path: req.path,
-          method: req.method
-      });
-  }
-  // En production sur Vercel, les fichiers statiques (HTML/JS) sont servis directement.
-  // Ce catch-all ne devrait être atteint que pour des routes inconnues.
-  res.status(404).send('Not Found');
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ 
+        error: 'Route API introuvable', 
+        path: req.originalUrl,
+        method: req.method
+    });
 });
 
-// Export the app for Vercel
 module.exports = app;
-
-// Local development
-if (require.main === module) {
-  app.listen(port, () => {
-    console.log(`Backend local listening at http://localhost:${port}`);
-  });
-}

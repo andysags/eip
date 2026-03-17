@@ -67,12 +67,11 @@ async function loadFeaturedProducts() {
             products = await Store.fetchProducts();
         }
 
-        // Filter for popular or just take first 4
-        const featured = products.filter(p => p.isPopular || p.is_popular).slice(0, 4);
-        // Fallback if no popular flag
-        const displayProducts = featured.length > 0 ? featured : products.slice(0, 4);
+        // Show popular products, or fallback to ANY 4 products from DB if none are popular
+        const displayProducts = products.filter(p => p.is_popular || p.isPopular).slice(0, 4);
+        const finalSelection = displayProducts.length > 0 ? displayProducts : products.slice(0, 4);
 
-        if (displayProducts.length === 0) {
+        if (finalSelection.length === 0) {
             if (loader) loader.innerHTML = 'Aucun produit disponible pour le moment.';
             return;
         }
@@ -80,10 +79,16 @@ async function loadFeaturedProducts() {
         if (loader) loader.style.display = 'none';
 
         // Convert to HTML
-        const html = displayProducts.map(product => `
+        const html = finalSelection.map(product => {
+            if (!product.id) {
+                console.error('[Home] Skipping product with missing ID:', product);
+                return '';
+            }
+            
+            return `
             <div class="product-card">
-                <div class="product-image" style="background-image: url('${product.image || 'assets/img/placeholder.jpg'}');">
-                    ${(product.isPopular || product.is_popular) ? '<span class="product-badge">Populaire</span>' : ''}
+                <div class="product-image" style="background-image: url('${product.image || 'assets/img/placeholder.jpg'}'); background-size: cover; background-position: center; height: 200px;">
+                    ${(product.is_popular || product.isPopular) ? '<span class="product-badge">Populaire</span>' : ''}
                 </div>
                 <div class="product-info">
                     <div class="product-category">${product.category}</div>
@@ -96,7 +101,8 @@ async function loadFeaturedProducts() {
                     </button>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
 
         container.innerHTML = html;
 

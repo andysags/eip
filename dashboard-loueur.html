@@ -269,23 +269,8 @@
                 style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 2rem;">
                 <h4 style="margin-bottom: 1rem;">Revenus par Mois (2025-2026)</h4>
                 <!-- Visual Mock of a Bar Chart -->
-                <div style="display: flex; align-items: flex-end; height: 200px; gap: 10px; padding-top: 20px;">
-                    <div style="flex:1; background: #e5e7eb; border-radius: 4px; height: 30%; position: relative;"
-                        title="Jan"><span
-                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem;">Jan</span>
-                    </div>
-                    <div style="flex:1; background: #e5e7eb; border-radius: 4px; height: 45%; position: relative;"
-                        title="Fév"><span
-                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem;">Fév</span>
-                    </div>
-                    <div style="flex:1; background: var(--primary-color); border-radius: 4px; height: 75%; position: relative;"
-                        title="Mar (Actuel)"><span
-                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem; font-weight: 700;">Mar</span>
-                    </div>
-                    <div style="flex:1; background: #e5e7eb; border-radius: 4px; height: 10%; position: relative;"
-                        title="Avr"><span
-                            style="position: absolute; bottom: -25px; left:0; right:0; text-align:center; font-size: 0.8rem;">Avr</span>
-                    </div>
+                <div style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border-radius: 8px; border: 1px dashed #e5e7eb; color: var(--text-gray);">
+                    <p><i class="fas fa-chart-line"></i> Les graphiques seront disponibles après vos premières locations.</p>
                 </div>
             </div>
         </div>
@@ -325,7 +310,6 @@
         </div>
     </template>
 
-    <script src="assets/js/data.js?v=2.0"></script>
     <script src="assets/js/utils.js?v=2.0"></script>
     <script src="assets/js/store.js?v=2.0"></script>
     <script src="assets/js/app.js?v=2.0"></script>
@@ -334,11 +318,17 @@
             const user = Store.getUser();
             const metadata = user?.user_metadata || {};
             // Allow vendor check logic
-            if (!user || metadata.user_type !== 'loueur') {
+            if (!user || (metadata.user_type !== 'loueur' && metadata.user_type !== 'admin')) {
                 console.warn("Accès dashboard loueur interdit.");
                 window.location.href = 'connexion.html';
                 return;
             }
+
+            // Fill settings from metadata
+            const companyNameInput = document.getElementById('setting-company-name');
+            const contactEmailInput = document.getElementById('setting-contact-email');
+            if (companyNameInput) companyNameInput.value = metadata.name || '';
+            if (contactEmailInput) contactEmailInput.value = user.email || '';
 
             // Bind Navigation
             document.querySelectorAll('.dash-nav-item').forEach(link => {
@@ -596,6 +586,7 @@
             // const today = new Date().toISOString().split('T')[0];
 
             tbody.innerHTML = vendorProducts.map(p => {
+                if (!p.id) return ''; // Skip invalid/cached products without ID
                 // Mock availablity for now as we don't have complex calendar logic in backend yet
                 const available = p.stock;
 

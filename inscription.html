@@ -119,12 +119,12 @@
             const submitBtn = document.getElementById('submit-btn');
 
             if (password !== confirmPassword) {
-                alert("Les mots de passe ne correspondent pas !");
+                Utils.showToast("Les mots de passe ne correspondent pas !", "error");
                 return;
             }
 
             if (password.length < 6) {
-                alert("Le mot de passe doit faire au moins 6 caractères.");
+                Utils.showToast("Le mot de passe doit faire au moins 6 caractères.", "error");
                 return;
             }
 
@@ -141,14 +141,16 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Bienvenue chez EventBenin ! Votre compte est créé. Connectez-vous.');
-                    window.location.href = 'connexion.html';
+                    Utils.showToast('Bienvenue chez EventBenin ! Votre compte est créé.', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'connexion.html';
+                    }, 2000);
                 } else {
-                    alert(data.error || 'Erreur lors de l\'inscription.');
+                    Utils.showToast(data.error || 'Erreur lors de l\'inscription.', 'error');
                 }
             } catch (error) {
                 console.error('Erreur:', error);
-                alert('Erreur de connexion au serveur.');
+                Utils.showToast('Erreur de connexion au serveur.', 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Créer mon compte';

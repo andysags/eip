@@ -54,12 +54,11 @@
 
     <!-- Footer injected by app.js -->
 
-    <script src="assets/js/data.js?v=2.0"></script>
     <script src="assets/js/utils.js?v=2.0"></script>
     <script src="assets/js/store.js?v=2.0"></script>
     <script src="assets/js/app.js?v=2.0"></script>
     <script>
-        document.addEventListener('appReady', () => {
+        document.addEventListener('appReady', async () => {
             const params = new URLSearchParams(window.location.search);
             const vendorId = params.get('id');
             const currentUser = Store.getUser();
@@ -71,27 +70,29 @@
             let displayVendor = null;
 
             if (vendorId) {
-                // View specific vendor profile (Public)
-                // In MVP we just use mock data if not current user
+                // View specific vendor profile
+                // Real implementation would fetch vendor info from API
                 displayVendor = {
-                    name: "EventPro Locations",
-                    bio: "Spécialiste de la sonorisation et de l'éclairage pour mariages et conférences depuis 10 ans.",
+                    name: "Loueur de matériel",
+                    bio: "Partenaire EventBenin vérifié.",
                     id: vendorId
                 };
-            } else if (currentUser && currentUser.user_metadata?.user_type === 'loueur') {
-                // View own profile
-                displayVendor = {
-                    name: currentUser.user_metadata.name || currentUser.email,
-                    bio: currentUser.user_metadata.bio || "Aucune description fournie pour le moment. Allez dans les paramètres de votre tableau de bord pour en ajouter une.",
-                    id: currentUser.id
-                };
+            } else if (currentUser) {
+                const metadata = currentUser.user_metadata || {};
+                if (metadata.user_type === 'loueur' || metadata.user_type === 'admin') {
+                    // View own profile
+                    displayVendor = {
+                        name: metadata.name || currentUser.email,
+                        bio: metadata.bio || "Aucune description fournie.",
+                        id: currentUser.id
+                    };
+                }
             }
 
             if (displayVendor) {
                 vendorNameEl.textContent = displayVendor.name;
                 vendorBioEl.textContent = displayVendor.bio;
                 
-                // Show initials in avatar if no image
                 const avatar = document.getElementById('vendor-avatar');
                 if (avatar) {
                     const initials = displayVendor.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
@@ -100,17 +101,14 @@
             }
 
             // Load Products
-            const allProducts = Store.getAllProducts();
-            let filteredProducts = allProducts;
-            
+            let allProducts = Store.getAllProducts();
+            if (allProducts.length === 0) {
+                allProducts = await Store.fetchProducts();
+            }
+
+            let filteredProducts = [];
             if (displayVendor) {
-                // Filter by displayVendor.id if products have vendorId
-                filteredProducts = allProducts.filter(p => p.vendorId === displayVendor.id);
-                
-                // Fallback for demo: if no products for this specific vendor, show some related ones
-                if (filteredProducts.length === 0 && !vendorId) {
-                    filteredProducts = allProducts.slice(0, 3); // Show 3 first products as placeholder
-                }
+                filteredProducts = allProducts.filter(p => p.vendor_id === displayVendor.id);
             }
 
             if (filteredProducts.length === 0) {
@@ -122,23 +120,25 @@
                     </div>
                 `;
             } else {
-                productGrid.innerHTML = filteredProducts.map(product => `
+                productGrid.innerHTML = filteredProducts.map(product => {
+                    if (!product.id) return ''; // Skip invalid/cached products without ID
+                    return `
                     <div class="product-card">
-                        <div class="product-image">
-                            <img src="${product.image}" alt="${product.name}">
-                            ${product.isPopular ? '<span class="badge badge-popular">Populaire</span>' : ''}
+                        <div class="product-image" style="background-image: url('${product.image || 'assets/img/placeholder.jpg'}'); background-size: cover; background-position: center; height: 200px;">
+                            ${(product.isPopular || product.is_popular) ? '<span class="product-badge">Populaire</span>' : ''}
                         </div>
                         <div class="product-info">
                             <span class="product-category">${product.category}</span>
                             <h3>${product.name}</h3>
                             <div class="product-price">${Utils.formatCurrency(product.price)} / jour</div>
-                            <div class="product-actions">
-                                <a href="product-details.html?id=${product.id}" class="btn btn-outline btn-sm">Voir</a>
-                                <button class="btn btn-primary btn-sm" onclick="Store.addToCart('${product.id}')">Ajouter</button>
+                            <div class="product-actions" style="margin-top: auto; display: flex; gap: 0.5rem;">
+                                <a href="product-details.html?id=${product.id}" class="btn btn-outline btn-sm" style="flex: 1; text-align: center;">Voir</a>
+                                <button class="btn btn-primary btn-sm" onclick="Store.addToCart('${product.id}')" style="flex: 1;">Ajouter</button>
                             </div>
                         </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
             }
         });
     </script>

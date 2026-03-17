@@ -176,8 +176,17 @@ const App = {
     },
 
     showToast: (message, type = 'success') => {
-        console.log(`Toast (${type}): ${message}`);
-        alert(message); // Simple fallback for now
+        if (typeof Utils !== 'undefined' && Utils.showToast) {
+            Utils.showToast(message, type);
+        } else {
+            console.log(`Toast (${type}): ${message}`);
+            // Fallback ultra-basique si Utils n'est pas chargé
+            const toast = document.createElement('div');
+            toast.style = "position:fixed;top:20px;right:20px;background:#333;color:#fff;padding:1rem;border-radius:8px;z-index:9999;";
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
     }
 };
 

@@ -73,10 +73,13 @@ function renderProducts() {
     noResults.style.display = 'none';
 
     // Animate products in
-    container.innerHTML = filtered.map((product, index) => `
+    container.innerHTML = filtered.map((product, index) => {
+        if (!product.id) return ''; // Skip if broken
+
+        return `
         <div class="product-card" style="animation: fadeInUp 0.5s ease backwards ${index * 0.1}s">
-            <div class="product-image" style="background-image: url('${product.image}');">
-                ${product.isPopular ? '<span class="product-badge">Populaire</span>' : ''}
+            <div class="product-image" style="background-image: url('${product.image || 'assets/img/placeholder.jpg'}'); background-size: cover; background-position: center; height: 180px;">
+                ${(product.is_popular || product.isPopular) ? '<span class="product-badge">Populaire</span>' : ''}
             </div>
             <div class="product-info">
                 <div class="product-category">${product.category}</div>
@@ -90,7 +93,8 @@ function renderProducts() {
                 </div>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     // Re-attach listeners for buttons
     document.querySelectorAll('.addToCartBtn').forEach(btn => {
