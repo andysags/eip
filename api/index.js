@@ -67,7 +67,30 @@ app.use('/api/products', (req, res, next) => {
     }
 });
 
-// ... autres routes si nécessaire
+app.use('/api/orders', (req, res, next) => {
+    try {
+        require('../backend/routes/orders')(req.supabase)(req, res, next);
+    } catch (err) {
+        res.status(500).json({ error: "Erreur chargement routes Orders", details: err.message });
+    }
+});
+
+app.use('/api/upload', (req, res, next) => {
+    try {
+        require('../backend/routes/upload')(req.supabase)(req, res, next);
+    } catch (err) {
+        res.status(500).json({ error: "Erreur chargement routes Upload", details: err.message });
+    }
+});
+
+app.use('/api/admin', (req, res, next) => {
+    try {
+        require('../backend/routes/clarity')(req.supabase)(req, res, next);
+    } catch (err) {
+        res.status(500).json({ error: "Erreur chargement routes Admin", details: err.message });
+    }
+});
+
 app.use('/api/track', (req, res, next) => {
     try {
         require('../backend/routes/track')(req.supabase)(req, res, next);
