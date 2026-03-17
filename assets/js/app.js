@@ -36,7 +36,7 @@ const App = {
         console.log(`[AccessControl] Page: ${page}, User: ${user ? user.email : 'None'}`);
 
         // Pages nécessitant une connexion
-        const protectedPages = ['dashboard-client.html', 'dashboard-loueur.html', 'panier.html', 'checkout.html', 'profile-loueur.html'];
+        const protectedPages = ['dashboard-client.html', 'dashboard-loueur.html', 'dashboard-admin.html', 'panier.html', 'checkout.html', 'profile-loueur.html'];
 
         if (!user && protectedPages.includes(page)) {
             console.error("[AccessControl] Accès refusé : utilisateur non connecté. Redirection...");
@@ -63,6 +63,7 @@ const App = {
         const role = metadata.user_type;
         const name = metadata.name || user?.email || 'Utilisateur';
         const isVendor = role === 'loueur';
+        const isAdmin = role === 'admin';
 
         header.innerHTML = `
             <div class="container">
@@ -82,7 +83,7 @@ const App = {
                         <li><a href="dashboard-loueur.html" class="nav-link ${App.isActive('dashboard-loueur.html')}">Espace Loueurs</a></li>
                     
                     <div class="nav-actions">
-                        ${!isVendor ? `
+                        ${(!isVendor && !isAdmin) ? `
                         <a href="panier.html" class="icon-btn" title="Mon Panier">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="badge" id="cart-count">0</span>
@@ -96,7 +97,7 @@ const App = {
                                         <strong>${name}</strong><br>
                                         <small style="color:var(--text-gray)">${user.email}</small>
                                     </div>
-                                    <a href="${isVendor ? 'dashboard-loueur.html' : 'dashboard-client.html'}" class="dropdown-item"><i class="fas fa-th-large"></i> Mon Dashboard</a>
+                                    <a href="${isAdmin ? 'dashboard-admin.html' : isVendor ? 'dashboard-loueur.html' : 'dashboard-client.html'}" class="dropdown-item"><i class="fas fa-th-large"></i> ${isAdmin ? 'Admin Dashboard' : 'Mon Dashboard'}</a>
                                     <a href="#" onclick="App.logout()" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
                                 </div>
                             </div>
